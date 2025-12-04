@@ -6,24 +6,56 @@
         {
             for(int i=0;i< parola.Length; i++) 
             { 
-                     for(int j=0; j< alfabeto.Length; j++)
-                     {
-                        if(parola[i] == alfabeto[j])
-                        {
-                            parola[i] = alfabeto[j + key];
-                        }
-                    
-                     }
+                int j = 0;
+                while(parola[i]!= alfabeto[j])
+                {
+                    j++;
+                }
 
+                if (j + key >= alfabeto.Length)
+                {
+                    int saltifinali = key - (alfabeto.Length - j);
+                    parola[i] = alfabeto[saltifinali];
+                }
+                else {parola[i] = alfabeto[j + key];}
             }
-           
-            return parola;
 
+            return parola;
+        }
+
+        static char [] Trasposizione(char[] parola, int keyTrasposizione)
+        {
+            char[] parolaTrasposta = new char[parola.Length];
+            for (int i = 0; i < parola.Length; i++)
+            {
+                
+               
+            }
+            return parolaTrasposta;
+        }
+
+        static char[] decrittografia(char[] alfabeto, char[] parolaDec, int key2)
+        {
+            for (int i = 0; i < parolaDec.Length; i++)
+            {
+                int j = 0;
+                while (parolaDec[i] != alfabeto[j])
+                {
+                    j++;
+                }
+                if (j - key2 < 0)
+                {
+                    int saltifinali = key2 - j;
+                    parolaDec[i] = alfabeto[alfabeto.Length - saltifinali];
+                }
+                else { parolaDec[i] = alfabeto[j - key2]; }
+            }
+            return parolaDec;
         }
         static void Main(string[] args)
         {
             char[] alfabeto = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-            int key ;
+            int key;
             string parola;
 
             Console.WriteLine("Inserisci la chiave di crittografia (numero intero):");
@@ -33,15 +65,39 @@
             parola = Console.ReadLine();
 
             char[] parolaArray = parola.ToCharArray();
-
-             
+            Console.WriteLine();
             char []parolasostituita = crittografia(alfabeto, parolaArray, key);
 
-            for(int i=0; i< parolasostituita.Length; i++)
+            Console.WriteLine("Parola crittografata:");
+            for (int i=0; i< parolasostituita.Length; i++)
             {
                 Console.Write(parolasostituita[i]);
             }
             
+            Console.WriteLine();
+            Console.WriteLine("---------------------------------------------------------------");
+            Console.WriteLine();
+
+
+            string parolaDec;
+
+            Console.WriteLine("Inserisci la chiave di decrittografia (numero intero):");
+            int key2 = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Inserisci la parola da decrittografare:");
+            parolaDec = Console.ReadLine();
+
+            char[] parolaDecArray = parolaDec.ToCharArray();
+            Console.WriteLine();
+            char[] paroladecrittografata = decrittografia(alfabeto, parolaDecArray, key2);
+
+            Console.WriteLine("Parola decrittografata:");
+            for (int i = 0; i < paroladecrittografata.Length; i++)
+            {
+                Console.Write(paroladecrittografata[i]);
+            }
+
+
 
         }
     }
