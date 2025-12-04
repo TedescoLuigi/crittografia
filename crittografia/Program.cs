@@ -2,6 +2,7 @@
 {
     internal class Program
     {
+        //funzione crittografia cesare
         static char[] crittografia(char[] alfabeto, char[] parola, int key)
         {
             for(int i=0;i< parola.Length; i++) 
@@ -23,17 +24,18 @@
             return parola;
         }
 
-        static char [] Trasposizione(char[] parola, int keyTrasposizione)
+        //funzione trasposizione 
+        static char [] Trasposizione(char[] parola, int k)
         {
-            char[] parolaTrasposta = new char[parola.Length];
-            for (int i = 0; i < parola.Length; i++)
+            char[] sostituzine= new char[parola.Length];
+            for(int i = 0; i < parola.Length; i++)
             {
-                
-               
+                parola[i] = sostituzine[(i + k) % parola.Length];
             }
             return parolaTrasposta;
         }
 
+        //funzione decrittografia cesare
         static char[] decrittografia(char[] alfabeto, char[] parolaDec, int key2)
         {
             for (int i = 0; i < parolaDec.Length; i++)
@@ -54,6 +56,7 @@
         }
         static void Main(string[] args)
         {
+            //crittografia cesare
             char[] alfabeto = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
             int key;
             string parola;
@@ -78,7 +81,7 @@
             Console.WriteLine("---------------------------------------------------------------");
             Console.WriteLine();
 
-
+            //decrittografia cesare
             string parolaDec;
 
             Console.WriteLine("Inserisci la chiave di decrittografia (numero intero):");
@@ -96,6 +99,10 @@
             {
                 Console.Write(paroladecrittografata[i]);
             }
+
+            //trasposizione 
+            string parola3;
+            Console.WriteLine("Inserisci la parola :");
 
 
 
