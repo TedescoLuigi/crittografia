@@ -1,111 +1,100 @@
-﻿namespace crittografia
+using System;
+
+namespace crittografia
 {
     internal class Program
     {
-        //funzione crittografia cesare
+        // Funzione crittografia Cesare
         static char[] crittografia(char[] alfabeto, char[] parola, int key)
         {
-            for(int i=0;i< parola.Length; i++) 
-            { 
+            for (int i = 0; i < parola.Length; i++)
+            {
                 int j = 0;
-                while(parola[i]!= alfabeto[j])
-                {
-                    j++;
-                }
+                while (j < alfabeto.Length && parola[i] != alfabeto[j]) j++;
 
-                if (j + key >= alfabeto.Length)
+                if (j < alfabeto.Length)
                 {
-                    int saltifinali = key - (alfabeto.Length - j);
-                    parola[i] = alfabeto[saltifinali];
+                    parola[i] = alfabeto[(j + key) % alfabeto.Length];
                 }
-                else {parola[i] = alfabeto[j + key];}
             }
-
             return parola;
         }
 
-        //funzione trasposizione 
-        static char [] Trasposizione(char[] parola, int k)
-        {
-            char[] sostituzine= new char[parola.Length];
-            for(int i = 0; i < parola.Length; i++)
-            {
-                parola[i] = sostituzine[(i + k) % parola.Length];
-            }
-            return parolaTrasposta;
-        }
-
-        //funzione decrittografia cesare
-        static char[] decrittografia(char[] alfabeto, char[] parolaDec, int key2)
+        // Funzione decrittografia Cesare
+        static char[] decrittografia(char[] alfabeto, char[] parolaDec, int key)
         {
             for (int i = 0; i < parolaDec.Length; i++)
             {
                 int j = 0;
-                while (parolaDec[i] != alfabeto[j])
+                while (j < alfabeto.Length && parolaDec[i] != alfabeto[j]) j++;
+
+                if (j < alfabeto.Length)
                 {
-                    j++;
+                    int index = (j - key) % alfabeto.Length;
+                    if (index < 0) index += alfabeto.Length;
+                    parolaDec[i] = alfabeto[index];
                 }
-                if (j - key2 < 0)
-                {
-                    int saltifinali = key2 - j;
-                    parolaDec[i] = alfabeto[alfabeto.Length - saltifinali];
-                }
-                else { parolaDec[i] = alfabeto[j - key2]; }
             }
             return parolaDec;
         }
+
+        // Funzione trasposizione (ciclo avanti)
+        static char[] Trasposizione(char[] parola, int key)
+        {
+            char[] sostituzione = new char[parola.Length];
+            int len = parola.Length;
+
+            for (int i = 0; i < len; i++)
+            {
+                sostituzione[(i + key) % len] = parola[i];
+            }
+
+            return sostituzione;
+        }
+
+        // Funzione trasposizione inversa (ciclo indietro)
+        static char[] TrasposizioneInversa(char[] parola, int key)
+        {
+            char[] sostituzione = new char[parola.Length];
+            int len = parola.Length;
+
+            for (int i = 0; i < len; i++)
+            {
+                sostituzione[i] = parola[(i + len - key) % len];
+            }
+
+            return sostituzione;
+        }
+
         static void Main(string[] args)
         {
-            //crittografia cesare
-            char[] alfabeto = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
-            int key;
-            string parola;
+            char[] alfabeto = "abcdefghijklmnopqrstuvwxyz".ToCharArray();
 
-            Console.WriteLine("Inserisci la chiave di crittografia (numero intero):");
-            key = Convert.ToInt32(Console.ReadLine());
+            // --- Crittografia Cesare ---
+            Console.WriteLine("Inserisci la chiave di crittografia Cesare (numero intero):");
+            int keyCesare = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Inserisci la parola da crittografare:");
-            parola = Console.ReadLine();
-
+            string parola = Console.ReadLine();
             char[] parolaArray = parola.ToCharArray();
-            Console.WriteLine();
-            char []parolasostituita = crittografia(alfabeto, parolaArray, key);
 
-            Console.WriteLine("Parola crittografata:");
-            for (int i=0; i< parolasostituita.Length; i++)
-            {
-                Console.Write(parolasostituita[i]);
-            }
-            
-            Console.WriteLine();
-            Console.WriteLine("---------------------------------------------------------------");
-            Console.WriteLine();
+            char[] parolaCesare = crittografia(alfabeto, parolaArray, keyCesare);
+            Console.WriteLine("Parola dopo crittografia Cesare: " + new string(parolaCesare));
 
-            //decrittografia cesare
-            string parolaDec;
+            // --- Trasposizione sulla parola crittografata ---
+            Console.WriteLine("Inserisci la chiave di trasposizione (numero intero):");
+            int keyTrasposizione = Convert.ToInt32(Console.ReadLine());
 
-            Console.WriteLine("Inserisci la chiave di decrittografia (numero intero):");
-            int key2 = Convert.ToInt32(Console.ReadLine());
+            char[] parolaTrasposta = Trasposizione(parolaCesare, keyTrasposizione);
+            Console.WriteLine("Parola dopo trasposizione: " + new string(parolaTrasposta));
 
-            Console.WriteLine("Inserisci la parola da decrittografare:");
-            parolaDec = Console.ReadLine();
+            // --- Decifrazione inversa ---
+            // Prima inverso trasposizione
+            char[] parolaInversaTrasposizione = TrasposizioneInversa(parolaTrasposta, keyTrasposizione);
+            // Poi decrittografia Cesare
+            char[] parolaDecifrata = decrittografia(alfabeto, parolaInversaTrasposizione, keyCesare);
 
-            char[] parolaDecArray = parolaDec.ToCharArray();
-            Console.WriteLine();
-            char[] paroladecrittografata = decrittografia(alfabeto, parolaDecArray, key2);
-
-            Console.WriteLine("Parola decrittografata:");
-            for (int i = 0; i < paroladecrittografata.Length; i++)
-            {
-                Console.Write(paroladecrittografata[i]);
-            }
-
-            //trasposizione 
-            string parola3;
-            Console.WriteLine("Inserisci la parola :");
-
-
-
+            Console.WriteLine("Parola decifrata: " + new string(parolaDecifrata));
         }
     }
 }
